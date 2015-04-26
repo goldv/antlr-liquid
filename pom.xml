@@ -40,11 +40,11 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>${antlr4.version}</version>
-                <!-- <configuration>
+                <configuration>
                     <arguments>
                         <argument>-visitor</argument>
                     </arguments>
-                </configuration> -->
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

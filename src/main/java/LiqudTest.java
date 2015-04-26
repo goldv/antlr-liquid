@@ -16,9 +16,11 @@ public class LiqudTest {
 
         LiquidParser parser = new LiquidParser(cts);
 
-        ParseTree tree = parser.block();
+        ParseTree tree = parser.parse();
 
-        System.out.println(tree.toStringTree(parser));
+        DefaultLiquidVisitor dlf = new DefaultLiquidVisitor();
+
+        System.out.println( dlf.visit(tree) );
     }
 
 

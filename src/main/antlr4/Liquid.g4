@@ -64,13 +64,9 @@ tokens {
 }
 
 
-
-
-
-
 /* parser rules */
 parse
- : block
+ : block EOF
    //(t=. {System.out.printf("\%-20s '\%s'\n", tokenNames[$t.type], $t.text);})* EOF
  ;
 
@@ -82,7 +78,7 @@ atom
  : tag
  | output
  | assignment
- //| Other
+ | text
  ;
 
 tag
@@ -127,7 +123,7 @@ comment_body
  ;
 
 other_than_tag_start
- : ~TagStart*
+ : ~(TagStart | OutStart)+
  ;
 
 if_tag
@@ -262,11 +258,7 @@ term
  | OPar expr CPar 
  ;
 
-lookup
- : id index* QMark?   
- | OBr Str CBr QMark? 
- | OBr Id CBr QMark?  
- ;
+lookup : Id;
 
 id
  : Id
@@ -281,6 +273,10 @@ id2
 index
  : Dot id2      
  | OBr expr CBr 
+ ;
+
+text
+ : ~(OutStart | OutEnd | TagStart | TagEnd)+
  ;
 
 /* lexer rules */
@@ -309,18 +305,6 @@ CPar      :  ')';
 OBr       :  '[';
 CBr       :  ']';
 QMark     :  '?';
-
-DoubleNum :  '-'? Digit+  '.' Digit* ;
-LongNum   :  '-'? Digit+;
-WS        :  (' ' | '\t' | '\r' | '\n');
-
-Id : (Letter | '_') (Letter | '_' | '-' | Digit)*;
-
-/* fragment rules */
-fragment Letter : 'a'..'z' | 'A'..'Z';
-fragment Digit  : '0'..'9';
-fragment SStr   : '\'' ~'\''* '\'' ;
-fragment DStr   : '"' ~'"'* '"'    ;
 
 CommentStart : 'comment';
 CommentEnd : 'endcomment';
@@ -356,14 +340,19 @@ EndId : 'end';
 Break : 'break';
 Continue : 'continue';
 Empty : 'empty';
+//Other : .+?;
 
-/*
-Other
- : ({!inTag && !openTagAhead()}? . )+
- | ({!inTag && inRaw && !openRawEndTagAhead()}? . )+
- ;
+DoubleNum :  '-'? Digit+  '.' Digit* ;
+LongNum   :  '-'? Digit+;
+WS        :  [ \t\r\n] -> skip;
 
- */
+Id : (Letter | '_') (Letter | '_' | '-' | Digit)*;
+
+/* fragment rules */
+fragment Letter : 'a'..'z' | 'A'..'Z';
+fragment Digit  : '0'..'9';
+fragment SStr   : '\'' ~'\''* '\'' ;
+fragment DStr   : '"' ~'"'* '"'    ;
 
 NoSpace
  : ~(' ' | '\t' | '\r' | '\n')
