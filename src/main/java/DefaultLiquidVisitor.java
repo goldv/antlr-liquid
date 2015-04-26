@@ -3,7 +3,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 /**
  * Created by vince on 24/04/15.
  */
-public class DefaultLiquidVisitor extends LiquidBaseVisitor<String>{
+public class DefaultLiquidVisitor extends LiquidParserBaseVisitor<String>{
 
     public String visitText(@NotNull LiquidParser.TextContext ctx) {
         return ctx.getText();

@@ -168,19 +168,15 @@ or_expr
  ;
 
 and_expr
- : contains_expr (And contains_expr)*
+ : rel_expr (And rel_expr)*
  ;
 
 contains_expr
- : eq_expr (Contains eq_expr)?
- ;
-
-eq_expr
- : rel_expr ((Eq | NEq) rel_expr)*
+ : rel_expr (Contains rel_expr)?
  ;
 
 rel_expr
- : term ((LtEq | Lt | GtEq | Gt) term)?
+ : term ((LtEq | Lt | GtEq | Gt | Eq | NEq) term)?
  ;
 
 term

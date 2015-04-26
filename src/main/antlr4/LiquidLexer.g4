@@ -1,16 +1,15 @@
 lexer grammar LiquidLexer;
 
-OPEN_TAG : '{%' -> pushMode(INSIDE_TAG);
-OPEN_OUTPUT : '{{' -> pushMode(INSIDE_OUTPUT);
+OPEN_TAG : '{%' -> pushMode(INSIDE);
+OPEN_OUTPUT : '{{' -> pushMode(INSIDE);
 
 TEXT : .+? ;
 
-
-
 // -------------------------- Everything inside a tag -------------------------
-mode INSIDE_TAG;
+mode INSIDE;
 
 CLOSE_TAG : '%}' -> popMode;
+CLOSE_OUTPUT : '}}' -> popMode;
 
 CommentStart : 'comment';
 CommentEnd : 'endcomment';
@@ -84,8 +83,7 @@ NoSpace
  : ~(' ' | '\t' | '\r' | '\n')
  ;
 
-// -------------------------- Everything inside an output -------------------------
-mode INSIDE_OUTPUT;
 
-CLOSE_OUTPUT : '}}' -> popMode;
+
+
 

@@ -2,6 +2,9 @@ outside the blocks
 
 {% for item in array %}
  hi there
-{% if item < 30 %}{% continue %}{% endif %}
-{{ item }}
+
+{% if item > 30 %}
+ {{ item }}
+{% endif %}
+
 {% endfor %}
