@@ -88,9 +88,9 @@ public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
         else throw new RuntimeException("Unknown operation type for expression");
     }
 
-    protected Boolean aggregateResult(Boolean aggregate, Boolean nextResult) {
-        System.out.println(aggregate + " " + nextResult);
-
-        return false;
-    }
+//    protected Boolean aggregateResult(Boolean aggregate, Boolean nextResult) {
+//        System.out.println(aggregate + " " + nextResult);
+//
+//        return false;
+//    }
 }
