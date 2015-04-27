@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +34,17 @@ public class ContextTest {
     Context c = new Context();
     c.add("test", 1);
     assertEquals(c.getAsNumber("test"), new Double(1.0) );
+  }
+
+  @Test
+  public void testBasicCollectionRetrieval(){
+    List<String> l = new LinkedList<>();
+    l.add("one");
+    l.add("two");
+
+    Context c = new Context();
+    c.add("test", l);
+    assertEquals(c.getAsCollection("test"),l );
   }
 
   @Test

@@ -1,20 +1,20 @@
-import org.antlr.v4.runtime.misc.NotNull;
+package com.goldv.visitor;
 
-import java.util.Map;
+import com.goldv.context.Context;
+import org.antlr.v4.runtime.misc.NotNull;
+import com.goldv.antlr.*;
 
 /**
  * Created by vince on 26/04/15.
  */
 public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
 
-
     enum Operation{EQ, NEQ, GTE, GT, LTE, LT}
 
+    private final Context context;
 
-    private final Map<String, Object> scope;
-
-    public ExpressionVisitor(Map<String, Object> scope){
-        this.scope = scope;
+    public ExpressionVisitor(Context context){
+        this.context = context;
     }
 
     public Boolean visitRel_expr(@NotNull LiquidParser.Rel_exprContext ctx) {
@@ -71,10 +71,7 @@ public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
             return Double.parseDouble(term.LongNum().getText());
         } else if( term.lookup() != null){
             String lookup = term.lookup().getText();
-            Object resolved = scope.get(lookup);
-            if( resolved instanceof Integer){
-                return ((Integer) resolved).doubleValue();
-            }
+            return context.getAsNumber(lookup);
         }
 
         return Double.NaN;

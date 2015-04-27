@@ -1,5 +1,6 @@
 package com.goldv.context;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -42,7 +43,7 @@ public class Context {
     if(value != null){
       if(value instanceof Integer) return ((Integer) value).doubleValue();
       else if(value instanceof Long) return ((Long) value).doubleValue();
-      else if(value instanceof Double) return ((Double) value).doubleValue();
+      else if(value instanceof Double) return ((Double) value);
     }
 
     return null;
@@ -50,8 +51,17 @@ public class Context {
 
   public String getAsString(String field){
     Object value = getValue(field);
-    if(value != null && value instanceof String){
-      return (String)value;
+    if(value != null){
+      return value.toString();
+    }
+
+    return null;
+  }
+
+  public Collection<Object> getAsCollection(String field){
+    Object value = getValue(field);
+    if(value != null && value instanceof Collection){
+      return (Collection)value;
     }
 
     return null;
