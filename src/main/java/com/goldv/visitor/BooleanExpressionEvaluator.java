@@ -7,13 +7,13 @@ import com.goldv.antlr.*;
 /**
  * Created by vince on 26/04/15.
  */
-public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
+public class BooleanExpressionEvaluator extends LiquidParserBaseVisitor<Boolean> {
 
     enum Operation{EQ, NEQ, GTE, GT, LTE, LT}
 
     private final Context context;
 
-    public ExpressionVisitor(Context context){
+    public BooleanExpressionEvaluator(Context context){
         this.context = context;
     }
 
@@ -29,7 +29,6 @@ public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
             Double term1 = doubleFromTerm(firstTerm);
 
             return performRelOperation(ctx, term1, term2);
-
         }
     }
 
@@ -84,10 +83,4 @@ public class ExpressionVisitor extends LiquidParserBaseVisitor<Boolean> {
         else if(ctx.LtEq() != null) return Operation.LTE;
         else throw new RuntimeException("Unknown operation type for expression");
     }
-
-//    protected Boolean aggregateResult(Boolean aggregate, Boolean nextResult) {
-//        System.out.println(aggregate + " " + nextResult);
-//
-//        return false;
-//    }
 }

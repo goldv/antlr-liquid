@@ -13,12 +13,12 @@ import java.util.Collection;
 /**
  * Created by vince on 26/04/15.
  */
-public class DefaultLiquidParserListener extends LiquidParserBaseVisitor<Writer> {
+public class TemplateRenderer extends LiquidParserBaseVisitor<Writer> {
 
     private final Context context;
     private final Writer writer;
 
-    public DefaultLiquidParserListener(Context scope, Writer writer){
+    public TemplateRenderer(Context scope, Writer writer){
         this.context = scope;
         this.writer = writer;
     }
@@ -64,7 +64,7 @@ public class DefaultLiquidParserListener extends LiquidParserBaseVisitor<Writer>
     }
 
     public Writer visitIf_tag(@NotNull LiquidParser.If_tagContext ctx) {
-        ExpressionVisitor ev = new ExpressionVisitor(context);
+        BooleanExpressionEvaluator ev = new BooleanExpressionEvaluator(context);
         if( ev.visitExpr(ctx.expr()) ){
             return visit( ctx.block() );
         } else {
