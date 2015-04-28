@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import com.goldv.visitor.DefaultLiquidParserListener;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class LiqudTest {
         scope.put("item", "blah blah");
         scope.put("array", items);
 
-        DefaultLiquidParserListener dlf = new DefaultLiquidParserListener(new Context(scope));
+        DefaultLiquidParserListener dlf = new DefaultLiquidParserListener(new Context(scope), new StringWriter());
 
         System.out.println(dlf.visit(tree) );
 

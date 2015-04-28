@@ -5,75 +5,75 @@ import com.goldv.antlr.LiquidParserBaseVisitor;
 import com.goldv.context.ChildContext;
 import com.goldv.context.Context;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 
 /**
  * Created by vince on 26/04/15.
  */
-public class DefaultLiquidParserListener extends LiquidParserBaseVisitor<String> {
+public class DefaultLiquidParserListener extends LiquidParserBaseVisitor<Writer> {
 
     private final Context context;
+    private final Writer writer;
 
-    public DefaultLiquidParserListener(Context scope){
+    public DefaultLiquidParserListener(Context scope, Writer writer){
         this.context = scope;
+        this.writer = writer;
     }
 
-    public String visitText(@NotNull LiquidParser.TextContext ctx) {
-        return ctx.getText();
+    private Writer write(CharSequence str){
+        try {
+            return writer.append(str);
+        } catch(IOException e){
+            throw new RuntimeException("Unable to render", e);
+        }
     }
 
-    public String visitOutput(@NotNull LiquidParser.OutputContext ctx) {
+    public Writer visitText(@NotNull LiquidParser.TextContext ctx) {
+        return write(ctx.getText());
+    }
+
+    public Writer visitOutput(@NotNull LiquidParser.OutputContext ctx) {
         // evaluate the expression
-        String result = visit(ctx.expr());
-        return result;
+        return visit(ctx.expr());
     }
 
-    public String visitLookup(@NotNull LiquidParser.LookupContext ctx) {
+    public Writer visitLookup(@NotNull LiquidParser.LookupContext ctx) {
         String value = context.getAsString(ctx.getText());
 
-        if(value == null) return "";
-        else return value;
+        if(value == null) return write("");
+        else return write(value);
     }
 
-    public String visitFor_array(@NotNull LiquidParser.For_arrayContext ctx) {
+    public Writer visitFor_array(@NotNull LiquidParser.For_arrayContext ctx) {
         Collection<Object> col = context.getAsCollection(ctx.lookup().getText());
 
         if(col != null){
             String childContextId = ctx.Id().getText();
-            StringBuilder sb = new StringBuilder();
 
             for( Object child : col){
                 ChildContext cs = context.createChild();
                 cs.add(childContextId, child);
-                sb.append(visit(ctx.for_block()));
+                visit(ctx.for_block());
                 cs.delete();
             }
-            return sb.toString();
         }
-        return "";
+        return writer;
     }
 
-    public String visitIf_tag(@NotNull LiquidParser.If_tagContext ctx) {
+    public Writer visitIf_tag(@NotNull LiquidParser.If_tagContext ctx) {
         ExpressionVisitor ev = new ExpressionVisitor(context);
         if( ev.visitExpr(ctx.expr()) ){
             return visit( ctx.block() );
         } else {
-            return "";
+            return write("");
         }
     }
 
-
-    protected String aggregateResult(String aggregate, String nextResult) {
-        if(aggregate != null && nextResult != null)
-            return aggregate + nextResult;
-        if(aggregate != null)
-            return aggregate;
-        if(nextResult != null)
-            return nextResult;
-        else
-            return null;
+    protected Writer aggregateResult(Writer aggregate, Writer nextResult) {
+        return writer;
     }
-
-
 }
 
