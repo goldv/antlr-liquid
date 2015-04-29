@@ -4,6 +4,8 @@ import com.goldv.antlr.LiquidParser;
 import com.goldv.antlr.LiquidParserBaseVisitor;
 import com.goldv.context.ChildContext;
 import com.goldv.context.Context;
+import com.goldv.template.Template;
+import com.goldv.template.TemplateLoader;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.IOException;
@@ -17,10 +19,12 @@ public class TemplateRenderer extends LiquidParserBaseVisitor<Writer> {
 
     private final Context context;
     private final Writer writer;
+    private final TemplateLoader loader;
 
-    public TemplateRenderer(Context scope, Writer writer){
+    public TemplateRenderer(Context scope, Writer writer, TemplateLoader loader){
         this.context = scope;
         this.writer = writer;
+        this.loader = loader;
     }
 
     private Writer write(CharSequence str){
@@ -45,6 +49,12 @@ public class TemplateRenderer extends LiquidParserBaseVisitor<Writer> {
 
         if(value == null) return write("");
         else return write(value);
+    }
+
+    public Writer visitInclude_tag(@NotNull LiquidParser.Include_tagContext ctx) {
+        Template tmp = loader.forName(ctx.Str(0).getText().replace("\"",""));
+        tmp.render(context.getScope(), writer);
+        return writer;
     }
 
     public Writer visitFor_array(@NotNull LiquidParser.For_arrayContext ctx) {

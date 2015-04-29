@@ -19,13 +19,15 @@ import java.util.Map;
 public class Template {
 
   private final ParseTree tree;
+  private final TemplateLoader loader;
 
-  public Template(InputStream input) throws IOException {
-    tree = parse(input);
+  public Template(InputStream input, TemplateLoader loader) throws IOException {
+    this.tree = parse(input);
+    this.loader = loader;
   }
 
   public void render(Map<String, Object> context, Writer writer){
-    TemplateRenderer dlf = new TemplateRenderer(new Context(context), writer);
+    TemplateRenderer dlf = new TemplateRenderer(new Context(context), writer, loader);
     dlf.visit(tree);
   }
 
