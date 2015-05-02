@@ -1,15 +1,16 @@
 
 {% include "partial/header" %}
-outside the blocks
+<body>
+<h1> Test Page {{ item }}</h1>
 
+<ul>
 {% for item in array %}
- hi there
 
 {% if item > 30 %}
- stuff
- {{ item }}
+ <li>list item is {{ item }} </li>
 {% endif %}
 
 {% endfor %}
+</body>
 
-{% include "partial/header" %}
+{% include "partial/footer" %}
