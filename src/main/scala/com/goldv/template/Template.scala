@@ -2,7 +2,7 @@ package com.goldv.template
 
 import java.io.{Writer, InputStream}
 
-import com.goldv.antlr.{LiquidParser, LiquidLexer}
+import com.goldv.antlr.{LiquidParserBaseVisitor, LiquidParser, LiquidLexer}
 import com.goldv.context.Context
 import com.goldv.visitor.TemplateRenderer
 import org.antlr.v4.runtime.tree.ParseTree
@@ -15,9 +15,8 @@ class Template(input: InputStream, loader: TemplateLoader) {
 
   val tree: ParseTree  = parse(input)
 
-  def render(context: Context, writer: Writer) = {
-    val dlf = new TemplateRenderer(context, loader, writer);
-    dlf.visit(tree);
+  def render(renderer: LiquidParserBaseVisitor[Writer]) = {
+    renderer.visit(tree)
   }
 
   def parse(input: InputStream) = {

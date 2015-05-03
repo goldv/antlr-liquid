@@ -1,0 +1,2 @@
+@(value: String, array: String)
+<div ng-repeat="@value in @array">

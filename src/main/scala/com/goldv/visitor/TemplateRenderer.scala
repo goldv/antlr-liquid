@@ -11,11 +11,9 @@ import com.goldv.template.{TemplateLoader, Template }
  */
 class TemplateRenderer(context: Context, loader: TemplateLoader, writer: Writer) extends LiquidParserBaseVisitor[Writer]{
 
-
-
   override def visitText(ctx: LiquidParser.TextContext) = writer.append(ctx.getText())
 
-  override def visitOutput(ctx: LiquidParser.OutputContext) = visit(ctx.expr())
+  override def visitOutput(ctx: LiquidParser.OutputContext) = visit(ctx.lookup())
 
   override def visitLookup(ctx: LiquidParser.LookupContext) = {
     context.getString(ctx.getText()).foreach( t => writer.append(t))
@@ -23,7 +21,7 @@ class TemplateRenderer(context: Context, loader: TemplateLoader, writer: Writer)
   }
 
   override def visitInclude_tag(ctx: LiquidParser.Include_tagContext) = {
-    loader.forName(ctx.Str(0).getText.replace("\"", "")).foreach( t => t.render(context, writer))
+    loader.forName(ctx.Str(0).getText.replace("\"", "")).foreach( t => t.render(this))
     writer
   }
 

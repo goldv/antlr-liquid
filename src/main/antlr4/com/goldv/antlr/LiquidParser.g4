@@ -144,7 +144,7 @@ continue_tag
  ;
 
 output
- : OPEN_OUTPUT expr filter* CLOSE_OUTPUT
+ : OPEN_OUTPUT lookup filter* CLOSE_OUTPUT
  ;
 
 filter

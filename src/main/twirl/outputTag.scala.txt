@@ -1,0 +1,2 @@
+@(scope: String)
+<span ng-bind="@scope"></span>

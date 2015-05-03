@@ -1,6 +1,7 @@
 package com.goldv.io
 
-import java.io.{File, FileInputStream}
+import java.io.{Writer, File, FileInputStream}
+
 
 import com.goldv.template.{Template, TemplateLoader}
 import org.apache.commons.io.FileUtils

@@ -13,7 +13,7 @@ object Operation extends Enumeration {
   val EQ, NEQ, GTE, GT, LTE, LT = Value
 }
 
-class BooleanExpressionEvaluator(context: Context) extends LiquidParserBaseVisitor[Boolean]{
+class  BooleanExpressionEvaluator(context: Context) extends LiquidParserBaseVisitor[Boolean]{
 
   import Operation._
 
