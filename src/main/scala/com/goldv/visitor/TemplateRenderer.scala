@@ -4,7 +4,7 @@ import java.io.Writer
 
 import com.goldv.antlr.{LiquidParser, LiquidParserBaseVisitor}
 import com.goldv.context.Context
-import com.goldv.template.{TemplateLoader, Template }
+import com.goldv.template.{TemplateLoader}
 
 /**
  * Created by vince on 01/05/15.

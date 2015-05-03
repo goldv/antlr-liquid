@@ -5,7 +5,7 @@ import java.io.{Writer, File, FileInputStream}
 
 import com.goldv.template.{Template, TemplateLoader}
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.FileFilterUtils
+import org.apache.commons.io.filefilter.{SuffixFileFilter, FileFilterUtils}
 
 import scala.collection.JavaConversions._
 
@@ -23,7 +23,7 @@ class DefaultTemplateLoader(directoryName: String) extends TemplateLoader{
   def forName(name: String): Option[Template] = cache.get(name)
 
   def intitialize = {
-    val templateFiles = FileUtils.listFiles(baseDir, FileFilterUtils.trueFileFilter, FileFilterUtils.trueFileFilter)
+    val templateFiles = FileUtils.listFiles(baseDir, new SuffixFileFilter(".liquid"), FileFilterUtils.trueFileFilter)
 
     for (templateFile <- templateFiles) {
       val templateName = stripSuffix(baseDir, templateFile)

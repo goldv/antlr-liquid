@@ -7,6 +7,7 @@ import com.goldv.context.Context
 import com.goldv.io.DefaultTemplateLoader
 import com.goldv.visitor.{TemplateRenderer, AjaxRenderer}
 import spray.http.{MediaTypes, MediaType}
+import spray.httpx.SprayJsonSupport
 import spray.routing.SimpleRoutingApp
 import spray.json._
 
@@ -18,19 +19,29 @@ import spray.json._
  * Created by vince on 02/05/15.
  */
 
-object M2eeJsonProtocol extends DefaultJsonProtocol {
+case class Test(key:String, value: String)
 
-  implicit object MapJsonFormat extends JsonFormat[Map[String, Any]] { // 1
-  def write(m: Map[String, Any]) = {
-    JsObject(m.mapValues {                  // 2
-      case v: String => JsString(v)         // 3
-      case v: Int => JsNumber(v)
-      case v: Map[_, _] => write(v.asInstanceOf[Map[String, Any]])  // 4
-      case v: Any => JsString(v.toString)   // 5
-    })
-  }
+object M2eeJsonProtocol extends DefaultJsonProtocol with SprayJsonSupport{
 
-    def read(value: JsValue) = ???            // 6
+  implicit object AnyJsonFormat extends JsonFormat[Any] {
+    def write(x: Any) = x match {
+      case n: Int => JsNumber(n)
+      case s: String => JsString(s)
+      case x: Seq[_] => seqFormat[Any].write(x)
+      case m: Map[String, _] => mapFormat[String, Any].write(m.asInstanceOf[Map[String, Any]])
+      case b: Boolean if b == true => JsTrue
+      case b: Boolean if b == false => JsFalse
+      case x => serializationError("Do not understand object of type " + x.getClass.getName)
+    }
+    def read(value: JsValue) = value match {
+      case JsNumber(n) => n.intValue()
+      case JsString(s) => s
+      case a: JsArray => listFormat[Any].read(value)
+      case o: JsObject => mapFormat[String, Any].read(value)
+      case JsTrue => true
+      case JsFalse => false
+      case x => deserializationError("Do not understand how to deserialize " + x)
+    }
   }
 }
 
@@ -43,7 +54,7 @@ object Main extends App with SimpleRoutingApp{
   val scope: Map[String, Any] = Map("item" -> "Item List", "array" -> items)
 
 
-  import spray.httpx.SprayJsonSupport._
+  import spray.httpx.SprayJsonSupport.sprayJsonMarshaller
   import M2eeJsonProtocol._
 
   val loader = new DefaultTemplateLoader("src/main/resources")
@@ -81,10 +92,11 @@ object Main extends App with SimpleRoutingApp{
     path("rest"){
       get {
         complete {
-          scope.toJson
+          scope
         }
       }
-    }
+    } ~
+    pathPrefix("js") { get { getFromResourceDirectory("js") } }
   }
 
 

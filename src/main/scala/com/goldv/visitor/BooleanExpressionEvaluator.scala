@@ -29,7 +29,7 @@ class  BooleanExpressionEvaluator(context: Context) extends LiquidParserBaseVisi
     }
   }
 
-  override def visitAnd_expr(ctx: LiquidParser.And_exprContext) = ctx.rel_expr.exists(e => !visit(e))
+  override def visitAnd_expr(ctx: LiquidParser.And_exprContext) = !ctx.rel_expr.exists(e => !visit(e))
   override def visitOr_expr(ctx: LiquidParser.Or_exprContext) = ctx.and_expr().exists(visit)
   override def visitExpr(ctx: LiquidParser.ExprContext) = visit(ctx.or_expr)
 
@@ -55,9 +55,7 @@ class  BooleanExpressionEvaluator(context: Context) extends LiquidParserBaseVisi
     else if (term.lookup != null) {
       val lookup: String = term.lookup.getText
       context.getDouble(lookup).getOrElse(Double.NaN)
-    }
-
-    Double.NaN
+    } else Double.NaN
   }
 
   def deriveOperationFromExpr(ctx: LiquidParser.Rel_exprContext) = {
